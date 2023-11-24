@@ -13,6 +13,7 @@ import java.util.*;
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     private int generatorId = 0;
+
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) {
         validate(film);
@@ -21,10 +22,12 @@ public class FilmController {
         log.info("Добавлен новый фильм " + film.getName());
         return film;
     }
+
     @GetMapping("/films")
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }
+
     @GetMapping("/films/{id}")
     public Film getFilms(@PathVariable Integer id) {
         return films.get(id);
@@ -45,7 +48,7 @@ public class FilmController {
     }
 
     private static void validate(Film film) {
-        LocalDate DATA = LocalDate.of(1895, 12, 28);
+        LocalDate Date = LocalDate.of(1895, 12, 28);
         if ("".equals(film.getName())) {
             log.error("Название фильма пустое");
             throw new ValidationException("Название не может быть пустым");
@@ -54,11 +57,11 @@ public class FilmController {
             log.error("Превышена максимальная длина описания");
             throw new ValidationException("Максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(DATA)) {
+        if (film.getReleaseDate().isBefore(Date)) {
             log.error("Не верная дата релиза");
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
         }
-        if (film.getDuration()<=0) {
+        if (film.getDuration() <= 0) {
             log.error("Отрицательная продолжительность фильма");
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
