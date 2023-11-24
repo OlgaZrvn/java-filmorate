@@ -48,7 +48,7 @@ public class FilmController {
     }
 
     private static void validate(Film film) {
-        LocalDate Date = LocalDate.of(1895, 12, 28);
+        LocalDate date = LocalDate.of(1895, 12, 28);
         if ("".equals(film.getName())) {
             log.error("Название фильма пустое");
             throw new ValidationException("Название не может быть пустым");
@@ -57,7 +57,7 @@ public class FilmController {
             log.error("Превышена максимальная длина описания");
             throw new ValidationException("Максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(Date)) {
+        if (film.getReleaseDate().isBefore(date)) {
             log.error("Не верная дата релиза");
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
         }
