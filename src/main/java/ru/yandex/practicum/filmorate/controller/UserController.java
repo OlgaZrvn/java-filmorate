@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -17,6 +16,7 @@ import java.util.Map;
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     private int generatorId = 0;
+
     @PostMapping("/users")
     public User postUser(@RequestBody User user) {
         validate(user);
@@ -25,10 +25,12 @@ public class UserController {
         log.info("Добавлен новый пользователь " + user.getLogin());
         return user;
     }
+
     @GetMapping("/users")
     public List<User> getUsers() {
         return new ArrayList<>(users.values());
     }
+
     @GetMapping("/users/{id}")
     public User getUsers(@PathVariable Integer id) {
         return users.get(id);
@@ -47,6 +49,7 @@ public class UserController {
         }
         return user;
     }
+
     private static void validate(User user) {
         if ("".equals(user.getEmail()) || !user.getEmail().contains("@")) {
             log.error("Электронная почта пустая или не содержит символ @");
