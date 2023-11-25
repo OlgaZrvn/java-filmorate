@@ -42,7 +42,7 @@ public class UserController {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
             log.info("Обновлен пользователь " + user.getLogin());
-        } else if (user.getId() == null){
+        } else if (user.getId() == null) {
             user.setId(userId++);
             users.put(user.getId(), user);
             log.info("Добавлен новый пользователь " + user.getLogin());
