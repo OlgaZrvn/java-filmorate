@@ -62,7 +62,7 @@ public class UserController {
             log.error("Логин пустой или содержит пробелы");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы;");
         }
-        if (null == user.getName())  {
+        if (null == user.getName()) {
             user.setName(user.getLogin());
             log.info("Присвоено имя " + user.getName());
         }
