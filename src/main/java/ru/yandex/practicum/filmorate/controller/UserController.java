@@ -58,11 +58,11 @@ public class UserController {
             log.error("Электронная почта пустая или не содержит символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
         }
-        if (null == user.getLogin() || user.getLogin().contains(" ")) {
+        if (null == user.getLogin() || "".equals(user.getLogin()) || user.getLogin().contains(" ")) {
             log.error("Логин пустой или содержит пробелы");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы;");
         }
-        if (null == user.getName()) {
+        if (null == user.getName())  {
             user.setName(user.getLogin());
             log.info("Присвоено имя " + user.getName());
         }
