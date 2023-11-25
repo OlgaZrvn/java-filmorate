@@ -12,12 +12,12 @@ import java.util.*;
 @Slf4j
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
-    private int generatorId = 0;
+    private int filmId = 1;
 
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) {
         validate(film);
-        film.setId(generatorId++);
+        film.setId(filmId++);
         films.put(film.getId(), film);
         log.info("Добавлен новый фильм " + film.getName());
         return film;
@@ -29,20 +29,23 @@ public class FilmController {
     }
 
     @GetMapping("/films/{id}")
-    public Film getFilms(@PathVariable Integer id) {
+    public Film getFilmById(@PathVariable Integer id) {
         return films.get(id);
     }
 
-    @PutMapping("/films/{id}")
+    @PutMapping("/films")
     public Film updateFilm(@RequestBody Film film) {
         validate(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
             log.info("Обновлен фильм " + film.getName());
-        } else {
-            film.setId(generatorId++);
+        } else if (film.getId() == null) {
+            film.setId(filmId++);
             films.put(film.getId(), film);
             log.info("Добавлен новый фильм " + film.getName());
+        } else {
+            log.error("Некорректный id " + film.getId());
+            throw new ValidationException("Некорректный id");
         }
         return film;
     }
