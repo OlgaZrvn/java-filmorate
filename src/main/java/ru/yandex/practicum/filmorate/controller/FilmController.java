@@ -19,7 +19,7 @@ public class FilmController {
         validate(film);
         film.setId(filmId++);
         films.put(film.getId(), film);
-        log.info("Добавлен новый фильм " + film.getName());
+        log.info("Добавлен новый фильм {}", film.getName());
         return film;
     }
 
@@ -38,13 +38,13 @@ public class FilmController {
         validate(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-            log.info("Обновлен фильм " + film.getName());
+            log.info("Обновлен фильм {}", film.getName());
         } else if (film.getId() == null) {
             film.setId(filmId++);
             films.put(film.getId(), film);
-            log.info("Добавлен новый фильм " + film.getName());
+            log.info("Добавлен новый фильм {}", film.getName());
         } else {
-            log.error("Некорректный id " + film.getId());
+            log.error("Некорректный id {}", film.getId());
             throw new ValidationException("Некорректный id");
         }
         return film;
@@ -52,7 +52,7 @@ public class FilmController {
 
     private static void validate(Film film) {
         LocalDate date = LocalDate.of(1895, 12, 28);
-        if ("".equals(film.getName())) {
+        if (film.getName().isEmpty()) {
             log.error("Название фильма пустое");
             throw new ValidationException("Название не может быть пустым");
         }

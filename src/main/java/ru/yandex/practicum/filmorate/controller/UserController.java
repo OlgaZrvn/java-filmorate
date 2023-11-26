@@ -1,16 +1,19 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Validated
 @RestController
 @Slf4j
 public class UserController {
@@ -18,11 +21,11 @@ public class UserController {
     private int userId = 1;
 
     @PostMapping("/users")
-    public User postUser(@RequestBody User user) {
+    public User postUser(@Valid @RequestBody User user) {
         validate(user);
         user.setId(userId++);
         users.put(user.getId(), user);
-        log.info("Добавлен новый пользователь " + user.getLogin() + user.getName());
+        log.info("Добавлен новый пользователь {}", user.getName());
         return user;
     }
 
@@ -37,17 +40,17 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         validate(user);
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
-            log.info("Обновлен пользователь " + user.getLogin());
+            log.info("Обновлен пользователь {}", user.getLogin());
         } else if (user.getId() == null) {
             user.setId(userId++);
             users.put(user.getId(), user);
-            log.info("Добавлен новый пользователь " + user.getLogin());
+            log.info("Добавлен новый пользователь {}", user.getName());
         } else {
-            log.error("Некорректный id " + user.getId());
+            log.error("Некорректный id {}", user.getId());
             throw new ValidationException("Некорректный id");
         }
         return user;
@@ -64,7 +67,6 @@ public class UserController {
         }
         if (null == user.getName()) {
             user.setName(user.getLogin());
-            log.info("Присвоено имя " + user.getName());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             log.error("Не верная дата рождения");
