@@ -17,18 +17,6 @@ public class UserControllerTests {
     }
 
     @Test
-    public void shouldNotAddEmptyEmail() {
-        User user = new User(0, "", "Login", "Name", LocalDate.of(1999, 12, 28));
-        Assertions.assertThrows(ValidationException.class, () -> userController.postUser(user));
-    }
-
-    @Test
-    public void shouldNotAddIncorrectEmail() {
-        User user = new User(0, "Email.yandex.ru", "Login", "Name", LocalDate.of(1999, 12, 28));
-        Assertions.assertThrows(ValidationException.class, () -> userController.postUser(user));
-    }
-
-    @Test
     public void shouldNotAddEmptyLogin() {
         User user = new User(0, "Email@yandex.ru", "", "Name", LocalDate.of(1999, 12, 28));
         Assertions.assertThrows(ValidationException.class, () -> userController.postUser(user));
