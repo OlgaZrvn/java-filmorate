@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder.Default;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -16,7 +15,6 @@ public class User {
     private String email;
     @NotNull
     private String login;
-    @Default
-    private String name = login;
+    private String name;
     private LocalDate birthday;
 }
