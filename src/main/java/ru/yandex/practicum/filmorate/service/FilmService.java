@@ -29,6 +29,7 @@ public class FilmService {
         User user = userStorage.getById(userId);
         film.addLike(userId);
     }
+
     public void deleteLike(Integer filmId, Integer userId) {
         Film film = filmStorage.getById(filmId);
         User user = userStorage.getById(userId);
