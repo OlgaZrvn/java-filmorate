@@ -77,6 +77,7 @@ public class UserControllerTests {
         assertEquals(friendsOfUser1, userController.getFriends(1), "Друг не добавлен");
         assertEquals(friendsOfUser2, userController.getFriends(2), "Друг не добавлен");
     }
+
     @Test
     public void shouldDeleteAFriend() {
         userController.addFriend(1, 2);
