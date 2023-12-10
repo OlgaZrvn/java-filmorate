@@ -25,18 +25,20 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleNotFoundException(final NotFoundException e) {
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.info("Код ответа {}", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(
-                Map.of("Ошибка ", e.getMessage()),
-                HttpStatus.NOT_FOUND
+        return new ErrorResponse(
+                e.getMessage()
         );
     }
 
     @ExceptionHandler
-    @ResponseStatus (HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleThrowable(final Throwable e) {
+    @ResponseStatus (code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleThrowable(final Throwable e) {
         log.info("Код ответа {}", HttpStatus.INTERNAL_SERVER_ERROR);
-        return Map.of("Произошла непредвиденная ошибка.", e.getMessage());
+        return new ErrorResponse(
+                e.getMessage()
+        );
     }
 }

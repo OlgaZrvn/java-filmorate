@@ -1,14 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -19,37 +17,34 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-    private final UserStorage userStorage;
     private final UserService userService;
 
-    @Autowired
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/users")
     public User postUser(@Valid @RequestBody User user) {
         validate(user);
-        userStorage.save(user);
+        userService.save(user);
         log.info("Добавлен новый пользователь {}", user.getName());
         return user;
     }
 
     @GetMapping("/users")
     public List<User> getUsers() {
-        return userStorage.getAll();
+        return userService.getAll();
     }
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Integer id) {
-        return userStorage.getById(id);
+        return userService.getById(id);
     }
 
     @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
         validate(user);
-        userStorage.update(user);
+        userService.update(user);
         return user;
     }
 

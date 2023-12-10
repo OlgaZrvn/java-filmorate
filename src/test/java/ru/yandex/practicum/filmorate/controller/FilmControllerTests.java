@@ -29,11 +29,9 @@ public class FilmControllerTests {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         filmController = new FilmController(
-                filmStorage,
                 new FilmService(filmStorage, userStorage)
                 );
         userController = new UserController(
-                userStorage,
                 new UserService(userStorage)
         );
     }

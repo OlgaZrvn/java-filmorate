@@ -22,7 +22,6 @@ public class UserControllerTests {
     public void setUp() {
         UserStorage userStorage = new InMemoryUserStorage();
         userController = new UserController(
-                userStorage,
                 new UserService(userStorage)
         );
         User user1 = new User(1, "Email1@yandex.ru", "Login1", "Name1",
