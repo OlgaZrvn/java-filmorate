@@ -17,7 +17,7 @@ public class UserDbStorageTests {
     private final JdbcTemplate jdbcTemplate;
 
     @Test
-    public void ShouldGetUserById() {
+    public void shouldGetUserById() {
         User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov", LocalDate.of(1990, 1, 1));
         UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
         userStorage.save(newUser);
