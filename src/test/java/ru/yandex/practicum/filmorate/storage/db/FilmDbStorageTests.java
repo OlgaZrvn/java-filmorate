@@ -19,7 +19,7 @@ public class FilmDbStorageTests {
     private final JdbcTemplate jdbcTemplate;
 
    @Test
-    public void ShouldGetFilmById() {
+    public void shouldGetFilmById() {
         FilmDbStorage filmStorage = new FilmDbStorage(jdbcTemplate, new GenreDbStorage(jdbcTemplate));
         Film newFilm = new Film("Титаник", "В первом и последнем плавании шикарного «Титаника» " +
                 "встречаются двое. Пассажир нижней палубы Джек выиграл билет в карты, а богатая наследница Роза " +
