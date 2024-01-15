@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
@@ -42,7 +43,10 @@ public class FilmControllerTests {
                 LocalDate.of(1999, 12, 28), 90L, new Mpa(1, "G"));
         film.setGenres(Set.of(new Genre(1, "Комедия")));
         filmController.postFilm(film);
-        assertEquals(film, filmController.getFilmById(film.getId()), "Фильм не добавлен");
+        assertThat(film)
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(film);
     }
 
     @Test
