@@ -26,7 +26,7 @@ public class MpaController {
     }
 
     @GetMapping("/mpa/{id}")
-    public Optional<Mpa> getRatingById(@PathVariable @Positive Integer id) {
+    public Optional<Mpa> getMpaById(@PathVariable @Positive Integer id) {
         if (mpaService.getMpaById(id) != null) {
             return Optional.ofNullable(mpaService.getMpaById(id));
         } else {

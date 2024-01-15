@@ -17,10 +17,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class FilmDbStorageTests {
 
     private final JdbcTemplate jdbcTemplate;
+    private FilmDbStorage filmStorage;
 
    @Test
     public void shouldGetFilmById() {
-        FilmDbStorage filmStorage = new FilmDbStorage(jdbcTemplate, new GenreDbStorage(jdbcTemplate));
+        filmStorage = new FilmDbStorage(jdbcTemplate, new GenreDbStorage(jdbcTemplate));
         Film newFilm = new Film("Титаник", "В первом и последнем плавании шикарного «Титаника» " +
                 "встречаются двое. Пассажир нижней палубы Джек выиграл билет в карты, а богатая наследница Роза " +
                 "отправляется в Америку, чтобы выйти замуж по расчёту. ",

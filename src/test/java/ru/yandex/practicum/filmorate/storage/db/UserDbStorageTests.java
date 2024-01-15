@@ -15,11 +15,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserDbStorageTests {
     private final JdbcTemplate jdbcTemplate;
+    private UserDbStorage userStorage;
 
     @Test
     public void shouldGetUserById() {
-        User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov", LocalDate.of(1990, 1, 1));
-        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        userStorage = new UserDbStorage(jdbcTemplate);
+        User newUser = new User(1, "user@email.ru", "vanya123", "Ivan Petrov",
+                LocalDate.of(1990, 1, 1));
         userStorage.save(newUser);
         User savedUser = userStorage.getById(1);
         assertThat(savedUser)

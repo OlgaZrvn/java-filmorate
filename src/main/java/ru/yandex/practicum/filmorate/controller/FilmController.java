@@ -24,9 +24,7 @@ public class FilmController {
 
     @PostMapping
     public Film postFilm(@RequestBody Film film) {
-        log.info("Проверяем фильм {}", film.toString());
         validate(film);
-        log.info("Фильм проверен");
         filmService.save(film);
         log.info("Добавлен новый фильм {}", film.getName());
         return film;
