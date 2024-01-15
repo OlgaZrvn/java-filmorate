@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -9,21 +10,22 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Validated
 @RestController
 @Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @PostMapping("/users")
+    @PostMapping
     public User postUser(@Valid @RequestBody User user) {
         validate(user);
         userService.save(user);
@@ -31,46 +33,63 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        return userService.getAll();
+    @GetMapping
+    public Optional<Collection<User>> getUsers() {
+        return Optional.ofNullable(userService.getAll());
     }
 
-    @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getById(id);
+    @GetMapping("/{id}")
+    public Optional<User> getUserById(@PathVariable Integer id) {
+        if (userService.getById(id) != null) {
+            return Optional.ofNullable(userService.getById(id));
+        } else {
+            log.error("Пользователь c id {} не найден", id);
+            throw new NotFoundException("Пользователь не найден");
+        }
     }
 
-    @PutMapping("/users")
+    @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         validate(user);
-        userService.update(user);
-        return user;
-    }
-
-    @PutMapping("/users/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
-        if (id < 0 || friendId < 0) {
-            log.error("Отрицательный id");
-            throw new NotFoundException("Отрицательный id");
+        if (getUserById(user.getId()) != null) {
+            return userService.update(user);
+        } else {
+            log.error("Не удалось обновить пользователя");
+            throw new NotFoundException("Не удалось обновить пользователя. Пользователь не найден");
         }
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable @Positive Integer id, @PathVariable @Positive Integer friendId) {
         userService.addAFriend(id, friendId);
-        log.info("{} подружился с {}", getUserById(id).getName(), getUserById(friendId).getName());
+        log.info("{} подружился с {}", userService.getById(id).getName(), userService.getById(friendId).getName());
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable @Positive Integer id, @PathVariable @Positive Integer friendId) {
+        if (userService.getById(id) == null || userService.getById(friendId) == null) {
+            log.error("Пользователь с id {} не надйен", id);
+            throw new NotFoundException("Пользователь не надйен");
+        }
         userService.deleteFriend(id, friendId);
-        log.info("{} больше не дружит с {}", getUserById(id).getName(), getUserById(friendId).getName());
+        log.info("{} больше не дружит с {}", userService.getById(id).getName(), userService.getById(friendId).getName());
     }
 
-    @GetMapping("/users/{id}/friends")
-    public List<User> getFriends(@PathVariable Integer id) {
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable @Positive Integer id) {
+        if (userService.getById(id) == null) {
+            log.error("Пользователь с id {} не надйен", id);
+            throw new NotFoundException("Пользователь не надйен");
+        }
         return userService.getAllFriends(id);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable @Positive Integer id, @PathVariable @Positive Integer otherId) {
+        if (userService.getById(id) == null || userService.getById(otherId) == null) {
+            log.error("Пользователь с id {} не надйен", id);
+            throw new NotFoundException("Пользователь не надйен");
+        }
         return userService.getCommonFriends(id, otherId);
     }
 
