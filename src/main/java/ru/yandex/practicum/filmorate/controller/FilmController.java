@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -23,7 +25,7 @@ public class FilmController {
     private final FilmService filmService;
 
     @PostMapping
-    public Film postFilm(@RequestBody Film film) {
+    public Film postFilm(@Valid @RequestBody Film film) {
         validate(film);
         filmService.save(film);
         log.info("Добавлен новый фильм {}", film.getName());
@@ -31,8 +33,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public Optional<Collection<Film>> getFilms() {
-        return Optional.ofNullable(filmService.getAll());
+    public Collection<Film> getFilms() {
+        return filmService.getAll();
     }
 
     @GetMapping("/{id}")
@@ -52,22 +54,24 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void likeFilm(@PathVariable("id") Integer filmId, @PathVariable("userId") Integer userId) {
+    public void likeFilm(@PathVariable("id") @PositiveOrZero Integer filmId,
+                         @PathVariable("userId") @PositiveOrZero Integer userId) {
         if (filmId < 0 || userId < 0) {
             log.error("Неверный id");
             throw new NotFoundException("Неверный id");
         }
-        log.info("Пользователь лайкнул фильм {}", filmService.getById(filmId).getName());
+        log.info("Пользователь лайкнул фильм");
         filmService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void unlikeFilm(@PathVariable("id") Integer filmId, @PathVariable("userId") Integer userId) {
-        if (filmId < 0 || userId < 0) {
+    public void unlikeFilm(@PathVariable("id") @PositiveOrZero Integer filmId,
+                           @PathVariable("userId") @PositiveOrZero Integer userId) {
+         if (filmId < 0 || userId < 0) {
             log.error("Неверный id");
             throw new NotFoundException("Неверный id");
         }
-        log.info("Пользователь отменил лайк фильму {}", filmService.getById(filmId).getName());
+        log.info("Пользователь отменил лайк фильму");
         filmService.deleteLike(filmId, userId);
     }
 

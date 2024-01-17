@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,10 +16,12 @@ import java.util.Set;
 @Builder
 public class Film {
     private Integer id;
-    @NotNull
+    @NotBlank(message = "Название не может быть пустым")
     private String name;
+    @Size(max = 200, message = "Максимальная длина описания - 200 символов")
     private String description;
     private LocalDate releaseDate;
+    @Positive(message = "Продолжительность фильма должна быть положительной")
     private Long duration;
     private Mpa mpa;
     private Set<Genre> genres = new HashSet<>();

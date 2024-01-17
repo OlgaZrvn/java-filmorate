@@ -27,8 +27,9 @@ public class MpaController {
 
     @GetMapping("/mpa/{id}")
     public Optional<Mpa> getMpaById(@PathVariable @Positive Integer id) {
-        if (mpaService.getMpaById(id) != null) {
-            return Optional.ofNullable(mpaService.getMpaById(id));
+        Mpa mpa = mpaService.getMpaById(id);
+        if (mpa != null) {
+            return Optional.ofNullable(mpa);
         } else {
             log.error("Mpa c id {} не найден", id);
             throw new NotFoundException("Mpa не найден");

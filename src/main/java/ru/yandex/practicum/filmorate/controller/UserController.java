@@ -67,12 +67,14 @@ public class UserController {
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable @Positive Integer id, @PathVariable @Positive Integer friendId) {
-        if (userService.getById(id) == null || userService.getById(friendId) == null) {
+        User user = userService.getById(id);
+        User friend = userService.getById(friendId);
+        if (user == null || friend == null) {
             log.error("Пользователь с id {} не надйен", id);
             throw new NotFoundException("Пользователь не надйен");
         }
         userService.deleteFriend(id, friendId);
-        log.info("{} больше не дружит с {}", userService.getById(id).getName(), userService.getById(friendId).getName());
+        log.info("{} больше не дружит с {}", user.getName(), friend.getName());
     }
 
     @GetMapping("/{id}/friends")
@@ -86,12 +88,16 @@ public class UserController {
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable @Positive Integer id, @PathVariable @Positive Integer otherId) {
-        if (userService.getById(id) == null || userService.getById(otherId) == null) {
+        User user = userService.getById(id);
+        User friend = userService.getById(otherId);
+        if (user == null || friend == null) {
             log.error("Пользователь с id {} не надйен", id);
             throw new NotFoundException("Пользователь не надйен");
         }
         return userService.getCommonFriends(id, otherId);
     }
+
+
 
     private static void validate(User user) {
         if (null == user.getLogin() || "".equals(user.getLogin()) || user.getLogin().contains(" ")) {
