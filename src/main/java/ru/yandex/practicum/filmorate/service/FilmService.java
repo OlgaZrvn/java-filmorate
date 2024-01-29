@@ -1,62 +1,55 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class FilmService {
 
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
-
-    @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
-    }
+    private final LikesStorage likesStorage;
 
     public Film save(Film film) {
         return filmStorage.save(film);
     }
 
-    public List<Film> getAll() {
+    public Collection<Film> getAll() {
         return filmStorage.getAll();
     }
 
     public Film getById(Integer id) {
+        if (!filmStorage.contains(id)) {
+            log.error("Фильм c id {} не найден", id);
+            throw new NotFoundException("Фильм не найден");
+        }
         return filmStorage.getById(id);
     }
 
     public Film update(Film film) {
+        if (!filmStorage.contains(film.getId())) {
+            log.error("Фильм c id {} не найден", film.getId());
+            throw new NotFoundException("Фильм не найден");
+        }
         return filmStorage.update(film);
     }
 
     public void addLike(Integer filmId, Integer userId) {
-        Film film = filmStorage.getById(filmId);
-        User user = userStorage.getById(userId);
-        film.addLike(userId);
+        likesStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
-        Film film = filmStorage.getById(filmId);
-        User user = userStorage.getById(userId);
-        film.deleteLike(userId);
+        likesStorage.removeLike(filmId, userId);
     }
 
-    public List<Film> getPopular(Integer count) {
-        return filmStorage.getAll()
-                .stream()
-                .sorted(Comparator.comparing(f -> f.getLikes().size(), Comparator.reverseOrder()))
-                .limit(count)
-                .collect(Collectors.toList());
+    public Collection<Film> getPopular(Integer count) {
+        return filmStorage.getPopular(count);
     }
 }
