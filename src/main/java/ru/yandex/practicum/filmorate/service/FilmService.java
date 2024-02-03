@@ -49,7 +49,7 @@ public class FilmService {
         likesStorage.removeLike(filmId, userId);
     }
 
-    public Collection<Film> getPopular(Integer count) {
-        return filmStorage.getPopular(count);
+    public Collection<Film> getPopular(Integer count, String genreId, String year) {
+        return filmStorage.getPopular(count, genreId, year);
     }
 }

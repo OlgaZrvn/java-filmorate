@@ -91,12 +91,51 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopular(int count) {
-        return jdbcTemplate.query("SELECT *, COUNT(likes.film_id) as count FROM films " +
-                "LEFT JOIN likes ON films.id=likes.film_id " +
-                "GROUP BY films.id " +
-                "ORDER BY count DESC " +
-                "LIMIT ?", this::mapRowToFilm, count);
+    public Collection<Film> getPopular(int count, String genreId, String year) {
+        Collection<Film> films = null;
+        int id = 0;
+        int y = 0;
+        if (genreId == null) {
+            if (year == null) {
+                films = jdbcTemplate.query("SELECT *, COUNT(likes.film_id) as count FROM films " +
+                        "LEFT JOIN likes ON films.id=likes.film_id " +
+                        "GROUP BY films.id " +
+                        "ORDER BY count DESC " +
+                        "LIMIT ?", this::mapRowToFilm, count);
+            } else {
+                y = Integer.parseInt(year);
+                log.info("Запрошены популярные фильмы {} года", y);
+                films = jdbcTemplate.query("SELECT *, COUNT(likes.film_id) as count FROM films " +
+                        "LEFT JOIN likes ON films.id=likes.film_id " +
+                        "WHERE YEAR(release_date) = ?" +
+                        "GROUP BY films.id " +
+                        "ORDER BY count DESC " +
+                        "LIMIT ?", this::mapRowToFilm, y, count);
+            }
+        } else {
+            if (year == null) {
+                id = Integer.parseInt(genreId);
+                log.info("Запрошены популярные фильмы {} жанра", id);
+                films = jdbcTemplate.query("SELECT *, COUNT(likes.film_id) as count FROM films " +
+                        "LEFT JOIN likes ON films.id=likes.film_id " +
+                        "LEFT JOIN film_genre ON films.id=film_genre.film_id " +
+                        "WHERE film_genre.genre_id = ? " +
+                        "GROUP BY films.id " +
+                        "ORDER BY count DESC " +
+                        "LIMIT ?", this::mapRowToFilm, id, count);
+            } else {
+                y = Integer.parseInt(year);
+                log.info("Запрошены популярные фильмы {} года и {} жанра", y, id);
+                films = jdbcTemplate.query("SELECT *, COUNT(likes.film_id) as count FROM films " +
+                        "LEFT JOIN likes ON films.id=likes.film_id " +
+                        "LEFT JOIN film_genre ON films.id=film_genre.film_id " +
+                        "WHERE YEAR(release_date) = ? AND film_genre.genre_id = ? " +
+                        "GROUP BY films.id " +
+                        "ORDER BY count DESC " +
+                        "LIMIT ?", this::mapRowToFilm, y, id, count);
+            }
+        }
+        return films;
     }
 
     private static Map<String, Object> filmToMap(Film film) {

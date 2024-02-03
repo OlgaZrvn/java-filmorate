@@ -16,5 +16,5 @@ public interface FilmStorage {
 
     boolean contains(int id);
 
-    Collection<Film> getPopular(int count);
+    Collection<Film> getPopular(int count, String genreId, String year);
 }
